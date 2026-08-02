@@ -80,4 +80,13 @@ if (import.meta.main) {
       movedPct: `${(r.metrics.movedPct! * 100).toFixed(1)}%`,
     }))
   );
+  if (rows.some((r) => r.strategy === "ring")) {
+    console.log(
+      "\nNote: with one ring position per node, a single resize's movedPct for " +
+        "the plain ring has high run-to-run variance (an unlucky/lucky hash for " +
+        "the new node can claim a tiny or huge arc) — the numbers above are one " +
+        "real run, not a smoothed average. See the vnode sweep for how adding " +
+        "more positions per node tightens this up."
+    );
+  }
 }
