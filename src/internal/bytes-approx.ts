@@ -15,3 +15,16 @@ export function approxStringArrayBytes(values: readonly string[]): number {
   for (const value of values) total += approxStringBytes(value);
   return total;
 }
+
+/** Rough approximation of an arbitrary stored value's heap footprint. */
+export function approxValueBytes(value: unknown): number {
+  if (value === undefined || value === null) return 8;
+  const type = typeof value;
+  if (type === "number" || type === "boolean") return 8;
+  if (type === "string") return approxStringBytes(value as string);
+  try {
+    return JSON.stringify(value).length * 2;
+  } catch {
+    return 32; // non-serializable (e.g. circular refs) — flat fallback
+  }
+}
