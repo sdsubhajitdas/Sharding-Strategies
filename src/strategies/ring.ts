@@ -19,7 +19,7 @@ import {
  * their hash landed. Virtual nodes (see `VirtualNodeRingSharder`) fix that.
  */
 export class RingSharder implements Sharder {
-  readonly name = "ring";
+  readonly name: string = "ring";
 
   protected readonly hashFn: HashFunction;
 

@@ -2,6 +2,7 @@ import type { HashFunction } from "../hash/types";
 import type { Sharder } from "../sharder";
 import { ModuloSharder } from "../strategies/modulo";
 import { RingSharder } from "../strategies/ring";
+import { VirtualNodeRingSharder } from "../strategies/vnode-ring";
 
 export interface StrategyFactory {
   /** Short label distinguishing this factory in tables (e.g. "vnode-ring (150)"). Usually matches the produced Sharder's `.name`. */
@@ -18,4 +19,5 @@ export interface StrategyFactory {
 export const STRATEGY_FACTORIES: readonly StrategyFactory[] = [
   { label: "modulo", create: (hashFn) => new ModuloSharder(hashFn) },
   { label: "ring", create: (hashFn) => new RingSharder(hashFn) },
+  { label: "vnode-ring", create: (hashFn) => new VirtualNodeRingSharder(hashFn) },
 ];
