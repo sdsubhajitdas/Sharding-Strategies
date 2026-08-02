@@ -1,0 +1,21 @@
+{
+  "name": "sharding-strategies",
+  "version": "0.1.0",
+  "description": "hash sharding -> consistent hashing ring -> virtual nodes, with a measured comparison harness",
+  "private": false,
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "bun": ">=1.3.14"
+  },
+  "scripts": {
+    "test": "bun test",
+    "compare": "bun run src/analysis/compare.ts",
+    "demo": "bun run src/demo/index.ts",
+    "bench": "bun run bench/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "1.3.14",
+    "typescript": "7.0.2"
+  }
+}
