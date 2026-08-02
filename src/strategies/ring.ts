@@ -31,8 +31,7 @@ export class RingSharder implements Sharder {
   private positions: number[] = [];
   private positionNodeIds: string[] = [];
 
-  // Source of truth for which nodes exist and at what weight; `positions`
-  // /`positionNodeIds` are rebuilt from this on every add/remove. A Map
+  // Source of truth for which nodes exist and at what weight. A Map
   // preserves insertion order, which is what `nodes` reports.
   private readonly nodeWeights = new Map<string, number>();
 
@@ -43,14 +42,33 @@ export class RingSharder implements Sharder {
   addNode(id: string, weight?: number): void {
     this.assertWeightSupported(weight);
     if (this.nodeWeights.has(id)) throw new DuplicateNodeError(id);
-    this.nodeWeights.set(id, weight ?? 1);
-    this.rebuild();
+    const resolvedWeight = weight ?? 1;
+    this.nodeWeights.set(id, resolvedWeight);
+
+    // Only this node's own positions need hashing/sorting — merge them
+    // into the existing sorted arrays in one linear pass rather than
+    // re-sorting everything from scratch on every single addNode call
+    // (which would make building an n-node ring cost O(n^2 log n)).
+    const newEntries = this.hashesForNode(id, resolvedWeight)
+      .map((position) => ({ position, nodeId: id }))
+      .sort((a, b) => a.position - b.position);
+    this.mergeIn(newEntries);
   }
 
   removeNode(id: string): void {
     if (!this.nodeWeights.has(id)) return;
     this.nodeWeights.delete(id);
-    this.rebuild();
+
+    const keptPositions: number[] = [];
+    const keptNodeIds: string[] = [];
+    for (let i = 0; i < this.positions.length; i++) {
+      if (this.positionNodeIds[i] !== id) {
+        keptPositions.push(this.positions[i]!);
+        keptNodeIds.push(this.positionNodeIds[i]!);
+      }
+    }
+    this.positions = keptPositions;
+    this.positionNodeIds = keptNodeIds;
   }
 
   getNode(key: string): string {
@@ -109,16 +127,46 @@ export class RingSharder implements Sharder {
     return [this.hashFn.hash(id)];
   }
 
-  private rebuild(): void {
-    const entries: Array<{ position: number; nodeId: string }> = [];
-    for (const [id, weight] of this.nodeWeights) {
-      for (const position of this.hashesForNode(id, weight)) {
-        entries.push({ position, nodeId: id });
+  /**
+   * Standard merge step (as in merge sort): `sortedNewEntries` is already
+   * sorted internally, and `this.positions` is already sorted, so
+   * producing their sorted union only takes one linear pass through both
+   * — no need to re-sort the combined set from scratch.
+   */
+  private mergeIn(sortedNewEntries: ReadonlyArray<{ position: number; nodeId: string }>): void {
+    const merged = new Array<number>(this.positions.length + sortedNewEntries.length);
+    const mergedIds = new Array<string>(this.positions.length + sortedNewEntries.length);
+
+    let i = 0; // pointer into the existing this.positions
+    let j = 0; // pointer into sortedNewEntries
+    let k = 0; // write pointer into merged/mergedIds
+    while (i < this.positions.length && j < sortedNewEntries.length) {
+      if (this.positions[i]! <= sortedNewEntries[j]!.position) {
+        merged[k] = this.positions[i]!;
+        mergedIds[k] = this.positionNodeIds[i]!;
+        i++;
+      } else {
+        merged[k] = sortedNewEntries[j]!.position;
+        mergedIds[k] = sortedNewEntries[j]!.nodeId;
+        j++;
       }
+      k++;
     }
-    entries.sort((a, b) => a.position - b.position);
-    this.positions = entries.map((e) => e.position);
-    this.positionNodeIds = entries.map((e) => e.nodeId);
+    while (i < this.positions.length) {
+      merged[k] = this.positions[i]!;
+      mergedIds[k] = this.positionNodeIds[i]!;
+      i++;
+      k++;
+    }
+    while (j < sortedNewEntries.length) {
+      merged[k] = sortedNewEntries[j]!.position;
+      mergedIds[k] = sortedNewEntries[j]!.nodeId;
+      j++;
+      k++;
+    }
+
+    this.positions = merged;
+    this.positionNodeIds = mergedIds;
   }
 
   /**
