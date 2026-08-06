@@ -1,6 +1,6 @@
 # Results
 
-Captured: 2026-08-02T19:14:40.915Z
+Captured: 2026-08-02T21:30:39.469Z
 
 Reproduce with:
 
@@ -70,20 +70,20 @@ bun run compare
 
 | strategy | hashFn | vnodeCount | nodeCount | coefficientOfVariation | bytesApprox | buildTimeMs | lookupOpsPerSec |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| vnode-ring | murmur3 | 1 | 8 | 0.9291 | 352 | 0.042 | 8606932 |
-| vnode-ring | murmur3 | 10 | 8 | 0.2608 | 3520 | 0.062 | 7770171 |
-| vnode-ring | murmur3 | 50 | 8 | 0.1589 | 17600 | 0.163 | 7382707 |
-| vnode-ring | murmur3 | 100 | 8 | 0.1244 | 35200 | 0.242 | 7171843 |
-| vnode-ring | murmur3 | 150 | 8 | 0.0439 | 52800 | 0.31 | 6978377 |
-| vnode-ring | murmur3 | 500 | 8 | 0.0214 | 176000 | 1.07 | 6362445 |
-| vnode-ring | murmur3 | 1000 | 8 | 0.0228 | 352000 | 2.001 | 6227991 |
-| vnode-ring | md5 | 1 | 8 | 1.2647 | 352 | 0.086 | 1406891 |
-| vnode-ring | md5 | 10 | 8 | 0.2476 | 3520 | 0.084 | 1366994 |
-| vnode-ring | md5 | 50 | 8 | 0.1157 | 17600 | 0.315 | 1328348 |
-| vnode-ring | md5 | 100 | 8 | 0.1012 | 35200 | 4.53 | 1332171 |
-| vnode-ring | md5 | 150 | 8 | 0.0514 | 52800 | 0.985 | 1305093 |
-| vnode-ring | md5 | 500 | 8 | 0.0437 | 176000 | 3.202 | 1271445 |
-| vnode-ring | md5 | 1000 | 8 | 0.0266 | 352000 | 6.438 | 1251918 |
+| vnode-ring | murmur3 | 1 | 8 | 0.9291 | 352 | 0.034 | 8695148 |
+| vnode-ring | murmur3 | 10 | 8 | 0.2608 | 3520 | 0.062 | 7904175 |
+| vnode-ring | murmur3 | 50 | 8 | 0.1589 | 17600 | 0.156 | 7346279 |
+| vnode-ring | murmur3 | 100 | 8 | 0.1244 | 35200 | 0.238 | 7161154 |
+| vnode-ring | murmur3 | 150 | 8 | 0.0439 | 52800 | 0.323 | 7220575 |
+| vnode-ring | murmur3 | 500 | 8 | 0.0214 | 176000 | 1.537 | 6443636 |
+| vnode-ring | murmur3 | 1000 | 8 | 0.0228 | 352000 | 2.137 | 6016349 |
+| vnode-ring | md5 | 1 | 8 | 1.2647 | 352 | 0.087 | 1374841 |
+| vnode-ring | md5 | 10 | 8 | 0.2476 | 3520 | 0.099 | 1375407 |
+| vnode-ring | md5 | 50 | 8 | 0.1157 | 17600 | 0.369 | 1345786 |
+| vnode-ring | md5 | 100 | 8 | 0.1012 | 35200 | 0.614 | 1335326 |
+| vnode-ring | md5 | 150 | 8 | 0.0514 | 52800 | 0.962 | 1315178 |
+| vnode-ring | md5 | 500 | 8 | 0.0437 | 176000 | 3.117 | 1299719 |
+| vnode-ring | md5 | 1000 | 8 | 0.0266 | 352000 | 6.355 | 1273578 |
 
 ## Weighted nodes (vnode-ring only)
 
