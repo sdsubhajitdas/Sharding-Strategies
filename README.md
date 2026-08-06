@@ -189,12 +189,12 @@ bun run bench  # lookup throughput and ring construction time, hand-timed with B
 import { VirtualNodeRingSharder, murmur3 } from "./src/index";
 
 const sharder = new VirtualNodeRingSharder(murmur3); // default 150 vnodes
-sharder.addNode("cache-1");
-sharder.addNode("cache-2");
-sharder.addNode("cache-3", 2); // weight-2: claims ~2x the ring
+sharder.addNode("shard-1");
+sharder.addNode("shard-2");
+sharder.addNode("shard-3", 2); // weight-2: claims ~2x the ring
 
-sharder.getNode("user:1023");              // -> "cache-1"
-sharder.getNodes("user:1023", 2);          // -> ["cache-1", "cache-3"] (for replication)
+sharder.getNode("user:1023");              // -> "shard-2"
+sharder.getNodes("user:1023", 2);          // -> ["shard-2", "shard-3"] (for replication)
 sharder.stats();                           // -> { positions: 600, bytesApprox: 27600 }
 ```
 
